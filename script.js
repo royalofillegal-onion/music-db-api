@@ -26,6 +26,103 @@ class MusicPlayer {
                         duration: '3:58'
                     },
                     {
+                        id: 2,
+                        title: 'Tillu Anna DJ Pedithe',
+                        artist: 'Ram Miriyala',
+                        imageUrl: 'https://c.saavncdn.com/199/DJ-Tillu-Telugu-2022-20220123173114-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 3,
+                        title: 'Srivalli',
+                        artist: 'Sid Sriram',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                        duration: '3:58'
+                    },
+                    {
+                        id: 4,
+                        title: 'Oo Antava',
+                        artist: 'Indravathi Chauhan',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                        duration: '3:27'
+                    }
+                    {
+                        id: 4,
+                        title: 'Oo Antava',
+                        artist: 'Indravathi Chauhan',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                        duration: '3:27'
+                    },
+                    {
+                        id: 2,
+                        title: 'Tillu Anna DJ Pedithe',
+                        artist: 'Ram Miriyala',
+                        imageUrl: 'https://c.saavncdn.com/199/DJ-Tillu-Telugu-2022-20220123173114-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 3,
+                        title: 'Srivalli',
+                        artist: 'Sid Sriram',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                        duration: '3:58'
+                    },
+                        
+                    {
+                        id: 4,
+                        title: 'Oo Antava',
+                        artist: 'Indravathi Chauhan',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                        duration: '3:27'
+                    },
+                    {
+                        id: 2,
+                        title: 'Tillu Anna DJ Pedithe',
+                        artist: 'Ram Miriyala',
+                        imageUrl: 'https://c.saavncdn.com/199/DJ-Tillu-Telugu-2022-20220123173114-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 3,
+                        title: 'Srivalli',
+                        artist: 'Sid Sriram',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                        duration: '3:58'
+                    },
+                    {
+                        id: 4,
+                        title: 'Oo Antava',
+                        artist: 'Indravathi Chauhan',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                        duration: '3:27'
+                    },
+                    {
+                        id: 2,
+                        title: 'Tillu Anna DJ Pedithe',
+                        artist: 'Ram Miriyala',
+                        imageUrl: 'https://c.saavncdn.com/199/DJ-Tillu-Telugu-2022-20220123173114-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 3,
+                        title: 'Srivalli',
+                        artist: 'Sid Sriram',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                        duration: '3:58'
+                    },
+                    {
                         id: 4,
                         title: 'Oo Antava',
                         artist: 'Indravathi Chauhan',
@@ -58,13 +155,61 @@ class MusicPlayer {
                         duration: '3:58'
                     },
                     {
+                        id: 2,
+                        title: 'Tillu Anna DJ Pedithe',
+                        artist: 'Ram Miriyala',
+                        imageUrl: 'https://c.saavncdn.com/199/DJ-Tillu-Telugu-2022-20220123173114-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 3,
+                        title: 'Srivalli',
+                        artist: 'Sid Sriram',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                        duration: '3:58'
+                    },
+                    {
                         id: 4,
                         title: 'Oo Antava',
                         artist: 'Indravathi Chauhan',
                         imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
                         audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
                         duration: '3:27'
-                    }
+                    },
+                    {
+                        id: 4,
+                        title: 'Oo Antava',
+                        artist: 'Indravathi Chauhan',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                        duration: '3:27'
+                    },
+                    {
+                        id: 2,
+                        title: 'Tillu Anna DJ Pedithe',
+                        artist: 'Ram Miriyala',
+                        imageUrl: 'https://c.saavncdn.com/199/DJ-Tillu-Telugu-2022-20220123173114-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                        duration: '4:15'
+                    },
+                    {
+                        id: 3,
+                        title: 'Srivalli',
+                        artist: 'Sid Sriram',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                        duration: '3:58'
+                    },
+                    {
+                        id: 4,
+                        title: 'Oo Antava',
+                        artist: 'Indravathi Chauhan',
+                        imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
+                        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                        duration: '3:27'
+                    },
                 ];
         
                 this.currentSongIndex = 0;
