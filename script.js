@@ -48,7 +48,7 @@ class MusicPlayer {
                         imageUrl: 'https://c.saavncdn.com/222/Pushpa-The-Rise-Telugu-2021-20211213161522-500x500.jpg',
                         audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
                         duration: '3:27'
-                    }
+                    },
                     {
                         id: 4,
                         title: 'Oo Antava',
