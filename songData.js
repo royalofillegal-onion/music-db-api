@@ -1,11 +1,11 @@
 const songDatabase = {
     songs: [
         {
-            id: 1,
-            title: "Test Song 1",
-            artist: "Test Artist 1",
-            cover: "https://picsum.photos/200?1",
-            file: "https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav"
+            id: Nuvvostanate Nenoddantana,
+            title: "Chandrullo unde kundelu",
+            artist: "Shankar Mahadevan",
+            cover: "https://res.cloudinary.com/dykzuljjr/image/upload/v1743418357/images_c9cebr.jpg",
+            file: "https://res.cloudinary.com/dykzuljjr/video/upload/v1743418367/04_-_Chandrullo_Unde_Kundelu_-_SenSongsMp3.co_w0qnnr.mp3"
         },
         {
             id: 2,
