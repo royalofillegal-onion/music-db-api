@@ -1,156 +1,42 @@
-// Song database with extended music collection
 const songDatabase = {
     songs: [
         {
             id: 1,
-            title: "Shape of You",
-            artist: "Ed Sheeran",
+            title: "Test Song 1",
+            artist: "Test Artist 1",
             cover: "https://picsum.photos/200?1",
-            file: "path/to/shape-of-you.mp3",
-            duration: "3:53"
+            file: "https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav"
         },
         {
             id: 2,
-            title: "Blinding Lights",
-            artist: "The Weeknd",
+            title: "Test Song 2",
+            artist: "Test Artist 2",
             cover: "https://picsum.photos/200?2",
-            file: "path/to/blinding-lights.mp3",
-            duration: "3:20"
+            file: "https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav"
         },
         {
             id: 3,
-            title: "Bad Guy",
-            artist: "Billie Eilish",
+            title: "Test Song 3",
+            artist: "Test Artist 3",
             cover: "https://picsum.photos/200?3",
-            file: "path/to/bad-guy.mp3",
-            duration: "3:14"
+            file: "https://www2.cs.uic.edu/~i101/SoundFiles/ImperialMarch60.wav"
         },
         {
             id: 4,
-            title: "Stay",
-            artist: "The Kid LAROI & Justin Bieber",
+            title: "Test Song 4",
+            artist: "Test Artist 4",
             cover: "https://picsum.photos/200?4",
-            file: "path/to/stay.mp3",
-            duration: "2:21"
+            file: "https://www2.cs.uic.edu/~i101/SoundFiles/PinkPanther60.wav"
         },
         {
             id: 5,
-            title: "Levitating",
-            artist: "Dua Lipa",
+            title: "Test Song 5",
+            artist: "Test Artist 5",
             cover: "https://picsum.photos/200?5",
-            file: "path/to/levitating.mp3",
-            duration: "3:23"
-        },
-        {
-            id: 6,
-            title: "Butter",
-            artist: "BTS",
-            cover: "https://picsum.photos/200?6",
-            file: "path/to/butter.mp3",
-            duration: "2:44"
-        },
-        {
-            id: 7,
-            title: "good 4 u",
-            artist: "Olivia Rodrigo",
-            cover: "https://picsum.photos/200?7",
-            file: "path/to/good-4-u.mp3",
-            duration: "2:58"
-        },
-        {
-            id: 8,
-            title: "Heat Waves",
-            artist: "Glass Animals",
-            cover: "https://picsum.photos/200?8",
-            file: "path/to/heat-waves.mp3",
-            duration: "3:59"
-        },
-        {
-            id: 9,
-            title: "Save Your Tears",
-            artist: "The Weeknd & Ariana Grande",
-            cover: "https://picsum.photos/200?9",
-            file: "path/to/save-your-tears.mp3",
-            duration: "3:35"
-        },
-        {
-            id: 10,
-            title: "Peaches",
-            artist: "Justin Bieber",
-            cover: "https://picsum.photos/200?10",
-            file: "path/to/peaches.mp3",
-            duration: "3:18"
-        },
-        {
-            id: 11,
-            title: "Dynamite",
-            artist: "BTS",
-            cover: "https://picsum.photos/200?11",
-            file: "path/to/dynamite.mp3",
-            duration: "3:19"
-        },
-        {
-            id: 12,
-            title: "drivers license",
-            artist: "Olivia Rodrigo",
-            cover: "https://picsum.photos/200?12",
-            file: "path/to/drivers-license.mp3",
-            duration: "4:02"
-        },
-        {
-            id: 13,
-            title: "Watermelon Sugar",
-            artist: "Harry Styles",
-            cover: "https://picsum.photos/200?13",
-            file: "path/to/watermelon-sugar.mp3",
-            duration: "2:54"
-        },
-        {
-            id: 14,
-            title: "Don't Start Now",
-            artist: "Dua Lipa",
-            cover: "https://picsum.photos/200?14",
-            file: "path/to/dont-start-now.mp3",
-            duration: "3:03"
-        },
-        {
-            id: 15,
-            title: "Mood",
-            artist: "24kGoldn ft. iann dior",
-            cover: "https://picsum.photos/200?15",
-            file: "path/to/mood.mp3",
-            duration: "2:21"
+            file: "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav"
         }
     ],
 
-    playlists: [
-        {
-            id: 'p1',
-            title: 'Top Hits 2024',
-            description: 'Popular hits',
-            cover: 'https://picsum.photos/200?6'
-        },
-        {
-            id: 'p2',
-            title: 'Chill Vibes',
-            description: 'Relaxing playlist',
-            cover: 'https://picsum.photos/200?7'
-        },
-        {
-            id: 'p3',
-            title: 'Workout Mix',
-            description: 'Energy boost',
-            cover: 'https://picsum.photos/200?8'
-        },
-        {
-            id: 'p4',
-            title: 'Study Focus',
-            description: 'Concentration music',
-            cover: 'https://picsum.photos/200?9'
-        }
-    ],
-
-    // Search functionality
     searchSongs: function(searchTerm) {
         if (!searchTerm) return [];
         
@@ -161,32 +47,23 @@ const songDatabase = {
         );
     },
 
-    // Get song by ID
     getSongById: function(id) {
         return this.songs.find(song => song.id === id);
     },
 
-    // Get random songs
     getRandomSongs: function(count) {
         const shuffled = [...this.songs].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, count);
+        return shuffled.slice(0, Math.min(count, shuffled.length));
     },
 
-    // Get featured playlists
     getFeaturedPlaylists: function() {
-        return this.playlists;
-    },
-
-    // Get trending songs (random selection for demo)
-    getTrendingSongs: function(count = 10) {
-        return this.getRandomSongs(count);
-    },
-
-    // Get recommended songs (random selection for demo)
-    getRecommendedSongs: function(count = 10) {
-        return this.getRandomSongs(count);
+        return [
+            { id: 'p1', title: 'Test Playlist 1', description: 'Test Description 1', cover: 'https://picsum.photos/200?6' },
+            { id: 'p2', title: 'Test Playlist 2', description: 'Test Description 2', cover: 'https://picsum.photos/200?7' },
+            { id: 'p3', title: 'Test Playlist 3', description: 'Test Description 3', cover: 'https://picsum.photos/200?8' },
+            { id: 'p4', title: 'Test Playlist 4', description: 'Test Description 4', cover: 'https://picsum.photos/200?9' }
+        ];
     }
 };
 
-// Make songDatabase globally available
 window.songDatabase = songDatabase;
