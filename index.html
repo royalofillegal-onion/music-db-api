@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Modern Music Player</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -147,9 +148,10 @@
             font-weight: bold;
         }
                 /* Slider and Card Styles */
-                .slider-section {
+        .slider-section {
             padding: 20px 0;
             margin-bottom: 30px;
+            overflow: hidden; /* Add this */
         }
 
         .slider-header {
@@ -193,14 +195,27 @@
             height: 8px;
         }
 
-        .songs-slider::-webkit-scrollbar-track {
-            background: transparent;
-            border-radius: 4px;
+        .songs-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: scroll;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            min-height: 250px;
+            width: 100%;
+            position: relative;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        .songs-slider::-webkit-scrollbar-thumb {
-            background: var(--hover-bg);
-            border-radius: 4px;
+        .songs-slider::-webkit-scrollbar {
+            display: none;
         }
 
         .songs-slider::-webkit-scrollbar-thumb:hover {
@@ -210,11 +225,14 @@
         .song-card {
             position: relative;
             min-width: 200px;
+            flex-shrink: 0;
             background: var(--card-bg);
             border-radius: 8px;
             padding: 15px;
             transition: all 0.3s ease;
             cursor: pointer;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
         }
 
         .song-card:hover {
@@ -682,7 +700,15 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            .songs-slider {
+                gap: 15px;
+                padding: 10px 5px;
+            }
+
+            .song-card {
+                min-width: 150px;
+            }
             .top-menu {
                 padding: 10px;
             }
@@ -919,6 +945,86 @@
             Notification.requestPermission();
         }
     }
+       //add new touch scrolling view
+        function initializeHorizontalScroll() {
+                const sliders = document.querySelectorAll('.songs-slider');
+                
+                sliders.forEach(slider => {
+                    let isDown = false;
+                    let startX;
+                    let scrollLeft;
+
+                    // Touch events
+                    slider.addEventListener('touchstart', (e) => {
+                        isDown = true;
+                        slider.classList.add('active');
+                        startX = e.touches[0].pageX - slider.offsetLeft;
+                        scrollLeft = slider.scrollLeft;
+                    });
+
+                    slider.addEventListener('touchend', () => {
+                        isDown = false;
+                        slider.classList.remove('active');
+                    });
+
+                    slider.addEventListener('touchmove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.touches[0].pageX - slider.offsetLeft;
+                        const walk = (x - startX);
+                        slider.scrollLeft = scrollLeft - walk;
+                    });
+
+                    // Mouse events for desktop
+                    slider.addEventListener('mousedown', (e) => {
+                        isDown = true;
+                        slider.classList.add('active');
+                        startX = e.pageX - slider.offsetLeft;
+                        scrollLeft = slider.scrollLeft;
+                    });
+
+                    slider.addEventListener('mouseleave', () => {
+                        isDown = false;
+                        slider.classList.remove('active');
+                    });
+
+                    slider.addEventListener('mouseup', () => {
+                        isDown = false;
+                        slider.classList.remove('active');
+                    });
+
+                    slider.addEventListener('mousemove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.pageX - slider.offsetLeft;
+                        const walk = (x - startX);
+                        slider.scrollLeft = scrollLeft - walk;
+                    });
+                });
+            }
+
+            // Modified initialization sequence
+            function init() {
+                initAudio();
+                initializeSliders();
+                initializeHorizontalScroll(); // Add this new function
+                
+                // Add click handlers for options buttons
+                document.querySelectorAll('.options-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const songCard = button.closest('.song-card');
+                        const songId = songCard.dataset.id;
+                        showOptionsMenu(e, songId);
+                    });
+                });
+
+                // Show welcome notification
+                showNotification('Welcome!', 'Start exploring your music collection.');
+            }
+
+            // Call the init function
+            init();
+        });
 
     // Create song card HTML
     function createSongCard(song) {
@@ -1163,6 +1269,8 @@ document.addEventListener('click', (e) => {
     volumeSlider.addEventListener('input', (e) => {
         audioElement.volume = e.target.value / 100;
     });
+       webView.getSettings().setJavaScriptEnabled(true);
+       webView.getSettings().setDomStorageEnabled(true);
 
     // Initialize everything
     initAudio();
