@@ -315,44 +315,72 @@
         .song-card:hover .options-button {
             opacity: 1;
         }
+
         .options-button:hover {
             background: rgba(0, 0, 0, 0.7);
             transform: scale(1.1);
         }
-        .search-container {
-            position: relative;
-        }
+
+        /* Search Results Styles */
         .search-results {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 10px);
             left: 0;
             right: 0;
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-height: 300px;
-            overflow-y: auto; 
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
         }
+
         .search-results.active {
-            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
+
         .search-result-item {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px 15px;
+            gap: 15px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background-color 0.2s ease;
         }
+
         .search-result-item:hover {
-            background: #f5f5f5;
+            background: var(--hover-bg);
         }
+
         .search-result-item img {
             width: 40px;
             height: 40px;
             border-radius: 4px;
-            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .search-result-item div {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-item h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-item p {
+            font-size: 12px;
+            color: var(--grey-text);
         }
                 /* Player Controls Styles */
                 .player {
@@ -852,316 +880,295 @@
             <div class="notification-message">Notification message here</div>
         </div>
     </div>
-    <script src="songData.js"></script>
     <script>
-   document.addEventListener('DOMContentLoaded', () => {
-    // Sample music data with actual songs
-    const musicData = {
-        recentlyPlayed: songDatabase.songs,
-        featuredPlaylists: songDatabase.getFeaturedPlaylists(),
-        topMixes: [
-            { id: 'm1', title: 'Pop Mix', description: 'Based on your listening', cover: 'https://picsum.photos/200?10' },
-            { id: 'm2', title: 'Rock Mix', description: 'Custom for you', cover: 'https://picsum.photos/200?11' },
-            { id: 'm3', title: 'Chill Mix', description: 'Personalized selection', cover: 'https://picsum.photos/200?12' }
-        ]
-    };
-
-    // DOM Elements
-    const searchInput = document.querySelector('.search-box input');
-    const searchResults = document.querySelector('.search-results');
-    const recentlyPlayedSlider = document.getElementById('recentlyPlayed');
-    const featuredPlaylistsSlider = document.getElementById('featuredPlaylists');
-    const topMixesSlider = document.getElementById('topMixes');
-    const recommendedSongsGrid = document.getElementById('recommendedSongs');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const repeatBtn = document.getElementById('repeatBtn');
-    const volumeBtn = document.getElementById('volumeBtn');
-    const volumeSlider = document.querySelector('.volume-slider');
-    const progressBar = document.querySelector('.progress-bar');
-    const progressContainer = document.querySelector('.progress-bar-container');
-    const currentTimeDisplay = document.getElementById('currentTime');
-    const totalTimeDisplay = document.getElementById('totalTime');
-
-    // Audio Context and State
-    let audioContext;
-    let audioElement = new Audio();
-    let isPlaying = false;
-    let currentSongIndex = 0;
-    let shuffle = false;
-    let repeat = false;
-
-    // Initialize audio context
-    function initAudio() {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission();
-        }
-    }
-
-    // Create song card HTML
-    function createSongCard(song) {
-        return `
-            <div class="song-card" data-id="${song.id}" data-file="${song.file}">
-                <img src="${song.cover}" alt="${song.title}">
-                <div class="song-card-overlay">
-                    <button class="play-button">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div>
-                <button class="options-button">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <h3>${song.title}</h3>
-                <p>${song.artist}</p>
-            </div>
-        `;
-    }
-
-    // Create playlist card HTML
-    function createPlaylistCard(playlist) {
-        return `
-            <div class="song-card" data-id="${playlist.id}">
-                <img src="${playlist.cover}" alt="${playlist.title}">
-                <div class="song-card-overlay">
-                    <button class="play-button">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div>
-                <h3>${playlist.title}</h3>
-                <p>${playlist.description}</p>
-            </div>
-        `;
-    }
-
-    // Initialize sliders
-    function initializeSliders() {
-        recentlyPlayedSlider.innerHTML = musicData.recentlyPlayed.map(createSongCard).join('');
-        featuredPlaylistsSlider.innerHTML = musicData.featuredPlaylists.map(createPlaylistCard).join('');
-        topMixesSlider.innerHTML = musicData.topMixes.map(createPlaylistCard).join('');
-        recommendedSongsGrid.innerHTML = musicData.recentlyPlayed.map(createSongCard).join('');
-
-        // Add click handlers for play buttons
-        document.querySelectorAll('.play-button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const songCard = button.closest('.song-card');
-                const songId = parseInt(songCard.dataset.id);
-                playSong(songId);
-            });
-        });
-    }
-
-    // Search functionality with debounce
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sample music data (replace with your actual data)
+            const musicData = {
+                recentlyPlayed: [
+                    { id: 1, title: 'Song One', artist: 'Artist 1', cover: 'https://picsum.photos/200?1', file: 'path/to/song1.mp3' },
+                    { id: 2, title: 'Song Two', artist: 'Artist 2', cover: 'https://picsum.photos/200?2', file: 'path/to/song2.mp3' },
+                    { id: 3, title: 'Song Three', artist: 'Artist 3', cover: 'https://picsum.photos/200?3', file: 'path/to/song3.mp3' },
+                    { id: 4, title: 'Song Four', artist: 'Artist 4', cover: 'https://picsum.photos/200?4', file: 'path/to/song4.mp3' },
+                    { id: 5, title: 'Song Five', artist: 'Artist 5', cover: 'https://picsum.photos/200?5', file: 'path/to/song5.mp3' },
+                    { id: 1, title: 'Song One', artist: 'Artist 1', cover: 'https://picsum.photos/200?1', file: 'path/to/song1.mp3' },
+                    { id: 2, title: 'Song Two', artist: 'Artist 2', cover: 'https://picsum.photos/200?2', file: 'path/to/song2.mp3' },
+                    { id: 3, title: 'Song Three', artist: 'Artist 3', cover: 'https://picsum.photos/200?3', file: 'path/to/song3.mp3' },
+                    { id: 4, title: 'Song Four', artist: 'Artist 4', cover: 'https://picsum.photos/200?4', file: 'path/to/song4.mp3' },
+                    { id: 5, title: 'Song Five', artist: 'Artist 5', cover: 'https://picsum.photos/200?5', file: 'path/to/song5.mp3' },
+                    { id: 1, title: 'Song One', artist: 'Artist 1', cover: 'https://picsum.photos/200?1', file: 'path/to/song1.mp3' },
+                    { id: 2, title: 'Song Two', artist: 'Artist 2', cover: 'https://picsum.photos/200?2', file: 'path/to/song2.mp3' },
+                    { id: 3, title: 'Song Three', artist: 'Artist 3', cover: 'https://picsum.photos/200?3', file: 'path/to/song3.mp3' },
+                    { id: 4, title: 'Song Four', artist: 'Artist 4', cover: 'https://picsum.photos/200?4', file: 'path/to/song4.mp3' },
+                    { id: 5, title: 'Song Five', artist: 'Artist 5', cover: 'https://picsum.photos/200?5', file: 'path/to/song5.mp3' },
+                    { id: 1, title: 'Song One', artist: 'Artist 1', cover: 'https://picsum.photos/200?1', file: 'path/to/song1.mp3' },
+                    { id: 2, title: 'Song Two', artist: 'Artist 2', cover: 'https://picsum.photos/200?2', file: 'path/to/song2.mp3' },
+                    { id: 3, title: 'Song Three', artist: 'Artist 3', cover: 'https://picsum.photos/200?3', file: 'path/to/song3.mp3' },
+                    { id: 4, title: 'Song Four', artist: 'Artist 4', cover: 'https://picsum.photos/200?4', file: 'path/to/song4.mp3' },
+                    { id: 5, title: 'Song Five', artist: 'Artist 5', cover: 'https://picsum.photos/200?5', file: 'path/to/song5.mp3' },
+                ],
+                featuredPlaylists: [
+                    { id: 'p1', title: 'Top Hits 2024', description: 'Popular hits', cover: 'https://picsum.photos/200?6' },
+                    { id: 'p2', title: 'Chill Vibes', description: 'Relaxing playlist', cover: 'https://picsum.photos/200?7' },
+                    { id: 'p3', title: 'Workout Mix', description: 'Energy boost', cover: 'https://picsum.photos/200?8' },
+                    { id: 'p4', title: 'Study Focus', description: 'Concentration music', cover: 'https://picsum.photos/200?9' },
+                    { id: 'p1', title: 'Top Hits 2024', description: 'Popular hits', cover: 'https://picsum.photos/200?6' },
+                    { id: 'p2', title: 'Chill Vibes', description: 'Relaxing playlist', cover: 'https://picsum.photos/200?7' },
+                    { id: 'p3', title: 'Workout Mix', description: 'Energy boost', cover: 'https://picsum.photos/200?8' },
+                    { id: 'p4', title: 'Study Focus', description: 'Concentration music', cover: 'https://picsum.photos/200?9' },
+                    { id: 'p1', title: 'Top Hits 2024', description: 'Popular hits', cover: 'https://picsum.photos/200?6' },
+                    { id: 'p2', title: 'Chill Vibes', description: 'Relaxing playlist', cover: 'https://picsum.photos/200?7' },
+                    { id: 'p3', title: 'Workout Mix', description: 'Energy boost', cover: 'https://picsum.photos/200?8' },
+                    { id: 'p4', title: 'Study Focus', description: 'Concentration music', cover: 'https://picsum.photos/200?9' },
+                    { id: 'p1', title: 'Top Hits 2024', description: 'Popular hits', cover: 'https://picsum.photos/200?6' },
+                    { id: 'p2', title: 'Chill Vibes', description: 'Relaxing playlist', cover: 'https://picsum.photos/200?7' },
+                    { id: 'p3', title: 'Workout Mix', description: 'Energy boost', cover: 'https://picsum.photos/200?8' },
+                    { id: 'p4', title: 'Study Focus', description: 'Concentration music', cover: 'https://picsum.photos/200?9' },
+                ],
+                topMixes: [
+                    { id: 'm1', title: 'Your Mix 1', description: 'Based on your listening', cover: 'https://picsum.photos/200?10' },
+                    { id: 'm2', title: 'Your Mix 2', description: 'Custom for you', cover: 'https://picsum.photos/200?11' },
+                    { id: 'm3', title: 'Your Mix 3', description: 'Personalized selection', cover: 'https://picsum.photos/200?12' },
+                    { id: 'm1', title: 'Your Mix 1', description: 'Based on your listening', cover: 'https://picsum.photos/200?10' },
+                    { id: 'm2', title: 'Your Mix 2', description: 'Custom for you', cover: 'https://picsum.photos/200?11' },
+                    { id: 'm3', title: 'Your Mix 3', description: 'Personalized selection', cover: 'https://picsum.photos/200?12' },
+                    { id: 'm1', title: 'Your Mix 1', description: 'Based on your listening', cover: 'https://picsum.photos/200?10' },
+                    { id: 'm2', title: 'Your Mix 2', description: 'Custom for you', cover: 'https://picsum.photos/200?11' },
+                    { id: 'm3', title: 'Your Mix 3', description: 'Personalized selection', cover: 'https://picsum.photos/200?12' },
+                ]
             };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
 
-   // ... existing code ...
-const handleSearch = debounce((searchTerm) => {
-    const searchResults = document.querySelector('.search-results');
-    
-    if (searchTerm.length < 2) {
-        searchResults.classList.remove('active');
-        return;
-    }
+            // DOM Elements
+            const searchInput = document.querySelector('.search-box input');
+            const searchResults = document.querySelector('.search-results');
+            const recentlyPlayedSlider = document.getElementById('recentlyPlayed');
+            const featuredPlaylistsSlider = document.getElementById('featuredPlaylists');
+            const topMixesSlider = document.getElementById('topMixes');
+            const recommendedSongsGrid = document.getElementById('recommendedSongs');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            const repeatBtn = document.getElementById('repeatBtn');
+            const volumeBtn = document.getElementById('volumeBtn');
+            const volumeSlider = document.querySelector('.volume-slider');
+            const progressBar = document.querySelector('.progress-bar');
+            const progressContainer = document.querySelector('.progress-bar-container');
+            const currentTimeDisplay = document.getElementById('currentTime');
+            const totalTimeDisplay = document.getElementById('totalTime');
 
-    const results = songDatabase.searchSongs(searchTerm);
+            // Audio Context and State
+            let audioContext;
+            let audioElement = new Audio();
+            let isPlaying = false;
+            let currentSongIndex = 0;
+            let shuffle = false;
+            let repeat = false;
 
-    if (results.length > 0) {
-        searchResults.innerHTML = results.map(song => `
-            <div class="search-result-item" data-id="${song.id}" data-file="${song.file}">
-                <img src="${song.cover}" alt="${song.title}">
-                <div>
-                    <h4>${song.title}</h4>
-                    <p>${song.artist}</p>
-                </div>
-            </div>
-        `).join('');
-        searchResults.classList.add('active');
+            // Initialize audio context
+            function initAudio() {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Request notification permission
+                if (Notification.permission !== 'granted') {
+                    Notification.requestPermission();
+                }
+            }
 
-        // Add click handlers for search results
-        document.querySelectorAll('.search-result-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const songId = parseInt(item.dataset.id);
-                playSong(songId);
-                searchInput.value = '';
-                searchResults.classList.remove('active');
-            });
-        });
-    } else {
-        searchResults.innerHTML = `
-            <div class="search-result-item no-results">
-                <p>No songs found</p>
-            </div>
-        `;
-        searchResults.classList.add('active');
-    }
-}, 300);
+            // Create song card HTML
+            function createSongCard(song) {
+                return `
+                    <div class="song-card" data-id="${song.id}">
+                        <img src="${song.cover}" alt="${song.title}">
+                        <div class="song-card-overlay">
+                            <button class="play-button">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        <button class="options-button">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <h3>${song.title}</h3>
+                        <p>${song.artist}</p>
+                    </div>
+                `;
+            }
 
-// Add click event listener to close search results when clicking outside
-document.addEventListener('click', (e) => {
-    const searchContainer = document.querySelector('.search-container');
-    const searchResults = document.querySelector('.search-results');
-    
-    if (!searchContainer.contains(e.target)) {
-        searchResults.classList.remove('active');
-    }
-});
+            // Create playlist card HTML
+            function createPlaylistCard(playlist) {
+                return `
+                    <div class="song-card" data-id="${playlist.id}">
+                        <img src="${playlist.cover}" alt="${playlist.title}">
+                        <div class="song-card-overlay">
+                            <button class="play-button">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        <h3>${playlist.title}</h3>
+                        <p>${playlist.description}</p>
+                    </div>
+                `;
+            }
 
-// Add click event listener to close search results when clicking outside
-document.addEventListener('click', (e) => {
-    const searchContainer = document.querySelector('.search-container');
-    const searchResults = document.querySelector('.search-results');
-    
-    if (!searchContainer.contains(e.target)) {
-        searchResults.classList.remove('active');
-    }
-});
-    // Play song function
-    function playSong(songId) {
-        const song = songDatabase.getSongById(songId);
-        if (song && song.file) {
-            // Update player info
-            const songInfo = document.querySelector('.song-info');
-            songInfo.querySelector('img').src = song.cover;
-            songInfo.querySelector('h4').textContent = song.title;
-            songInfo.querySelector('p').textContent = song.artist;
+            // Initialize sliders
+            function initializeSliders() {
+                recentlyPlayedSlider.innerHTML = musicData.recentlyPlayed.map(createSongCard).join('');
+                featuredPlaylistsSlider.innerHTML = musicData.featuredPlaylists.map(createPlaylistCard).join('');
+                topMixesSlider.innerHTML = musicData.topMixes.map(createPlaylistCard).join('');
+                recommendedSongsGrid.innerHTML = musicData.recentlyPlayed.map(createSongCard).join('');
+            }
 
-            // Update audio
-            audioElement.src = song.file;
-            audioElement.play();
-            isPlaying = true;
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            // Search functionality with debounce
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            const handleSearch = debounce((searchTerm) => {
+                if (searchTerm.length < 2) {
+                    searchResults.classList.remove('active');
+                    return;
+                }
+
+                const results = musicData.recentlyPlayed.filter(song =>
+                    song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    song.artist.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+                if (results.length > 0) {
+                    searchResults.innerHTML = results.map(song => `
+                        <div class="search-result-item" data-id="${song.id}">
+                            <img src="${song.cover}" alt="${song.title}">
+                            <div>
+                                <h4>${highlightMatch(song.title, searchTerm)}</h4>
+                                <p>${song.artist}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                    searchResults.classList.add('active');
+                } else {
+                    searchResults.classList.remove('active');
+                }
+            }, 300);
+
+            function highlightMatch(text, searchTerm) {
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            // Player controls
+            function togglePlay() {
+                if (!audioElement.src) return;
+                
+                if (isPlaying) {
+                    audioElement.pause();
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                } else {
+                    audioElement.play();
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+                isPlaying = !isPlaying;
+            }
+
+            function updateProgress(e) {
+                const { duration, currentTime } = e.target;
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                
+                currentTimeDisplay.textContent = formatTime(currentTime);
+                totalTimeDisplay.textContent = formatTime(duration);
+            }
+
+            function setProgress(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audioElement.duration;
+                audioElement.currentTime = (clickX / width) * duration;
+            }
+
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.floor(seconds % 60);
+                return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }
 
             // Show notification
-            showNotification('Now Playing', `${song.title} - ${song.artist}`);
-        }
-    }
-
-    // Player controls
-    function togglePlay() {
-        if (!audioElement.src) {
-            const firstSong = songDatabase.songs[0];
-            if (firstSong) {
-                playSong(firstSong.id);
+            function showNotification(title, message) {
+                const notification = document.querySelector('.notification');
+                const notificationTitle = notification.querySelector('.notification-title');
+                const notificationMessage = notification.querySelector('.notification-message');
+                
+                notificationTitle.textContent = title;
+                notificationMessage.textContent = message;
+                notification.classList.add('active');
+                
+                setTimeout(() => {
+                    notification.classList.remove('active');
+                }, 3000);
             }
-            return;
-        }
-        
-        if (isPlaying) {
-            audioElement.pause();
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        } else {
-            audioElement.play();
-            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        }
-        isPlaying = !isPlaying;
-    }
 
-    function updateProgress(e) {
-        const { duration, currentTime } = e.target;
-        const progressPercent = (currentTime / duration) * 100;
-        progressBar.style.width = `${progressPercent}%`;
-        
-        currentTimeDisplay.textContent = formatTime(currentTime);
-        totalTimeDisplay.textContent = formatTime(duration);
-    }
+            // Options menu
+            function showOptionsMenu(e, songId) {
+                e.stopPropagation();
+                const optionsMenu = document.querySelector('.options-menu');
+                const rect = e.target.getBoundingClientRect();
+                
+                optionsMenu.style.top = `${rect.bottom + 5}px`;
+                optionsMenu.style.left = `${rect.left}px`;
+                optionsMenu.classList.add('active');
 
-    function setProgress(e) {
-        const width = this.clientWidth;
-        const clickX = e.offsetX;
-        const duration = audioElement.duration;
-        audioElement.currentTime = (clickX / width) * duration;
-    }
-
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = Math.floor(seconds % 60);
-        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
-
-    // Show notification
-    function showNotification(title, message) {
-        const notification = document.querySelector('.notification');
-        const notificationTitle = notification.querySelector('.notification-title');
-        const notificationMessage = notification.querySelector('.notification-message');
-        
-        notificationTitle.textContent = title;
-        notificationMessage.textContent = message;
-        notification.classList.add('active');
-        
-        setTimeout(() => {
-            notification.classList.remove('active');
-        }, 3000);
-    }
-
-    // Options menu
-    function showOptionsMenu(e, songId) {
-        e.stopPropagation();
-        const optionsMenu = document.querySelector('.options-menu');
-        const rect = e.target.getBoundingClientRect();
-        
-        optionsMenu.style.top = `${rect.bottom + 5}px`;
-        optionsMenu.style.left = `${rect.left}px`;
-        optionsMenu.classList.add('active');
-
-        const closeMenu = (event) => {
-            if (!optionsMenu.contains(event.target) && !e.target.contains(event.target)) {
-                optionsMenu.classList.remove('active');
-                document.removeEventListener('click', closeMenu);
+                // Close menu when clicking outside
+                const closeMenu = (event) => {
+                    if (!optionsMenu.contains(event.target) && !e.target.contains(event.target)) {
+                        optionsMenu.classList.remove('active');
+                        document.removeEventListener('click', closeMenu);
+                    }
+                };
+                
+                setTimeout(() => {
+                    document.addEventListener('click', closeMenu);
+                }, 0);
             }
-        };
-        
-        setTimeout(() => {
-            document.addEventListener('click', closeMenu);
-        }, 0);
-    }
 
-    // Event Listeners
-    searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
-    playPauseBtn.addEventListener('click', togglePlay);
-    audioElement.addEventListener('timeupdate', updateProgress);
-    progressContainer.addEventListener('click', setProgress);
-    
-    volumeBtn.addEventListener('click', () => {
-        audioElement.muted = !audioElement.muted;
-        volumeBtn.innerHTML = audioElement.muted ? 
-            '<i class="fas fa-volume-mute"></i>' : 
-            '<i class="fas fa-volume-up"></i>';
-    });
-    
-    volumeSlider.addEventListener('input', (e) => {
-        audioElement.volume = e.target.value / 100;
-    });
+            // Event Listeners
+            searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+            playPauseBtn.addEventListener('click', togglePlay);
+            audioElement.addEventListener('timeupdate', updateProgress);
+            progressContainer.addEventListener('click', setProgress);
+            
+            volumeBtn.addEventListener('click', () => {
+                audioElement.muted = !audioElement.muted;
+                volumeBtn.innerHTML = audioElement.muted ? 
+                    '<i class="fas fa-volume-mute"></i>' : 
+                    '<i class="fas fa-volume-up"></i>';
+            });
+            
+            volumeSlider.addEventListener('input', (e) => {
+                audioElement.volume = e.target.value / 100;
+            });
 
-    // Initialize everything
-    initAudio();
-    initializeSliders();
+            // Initialize everything
+            initAudio();
+            initializeSliders();
 
-    // Add click handlers for options buttons
-    document.querySelectorAll('.options-button').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const songCard = button.closest('.song-card');
-            const songId = songCard.dataset.id;
-            showOptionsMenu(e, songId);
+            // Add click handlers for options buttons
+            document.querySelectorAll('.options-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const songCard = button.closest('.song-card');
+                    const songId = songCard.dataset.id;
+                    showOptionsMenu(e, songId);
+                });
+            });
+
+            // Show welcome notification
+            showNotification('Welcome!', 'Start exploring your music collection.');
         });
-    });
-
-    // Show welcome notification
-    showNotification('Welcome!', 'Start exploring your music collection.');
-});
-</script>
-    <script src="js/songData.js"></script>
+    </script>
 </body>
 </html>
