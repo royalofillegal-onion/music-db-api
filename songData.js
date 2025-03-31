@@ -1,7 +1,7 @@
 const songDatabase = {
     songs: [
         {
-            id: Nuvvostanate Nenoddantana,
+            id: 1,
             title: "Chandrullo unde kundelu",
             artist: "Shankar Mahadevan",
             cover: "https://res.cloudinary.com/dykzuljjr/image/upload/v1743418357/images_c9cebr.jpg",
