@@ -1009,6 +1009,39 @@
                 `;
             }
 
+           // ... existing code ...
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Replace this entire musicData object
+    /*const musicData = {
+        recentlyPlayed: [
+            { id: 1, title: 'Song One', artist: 'Artist 1', cover: 'https://picsum.photos/200?1', file: 'path/to/song1.mp3' },
+            // ... other songs ...
+        ],
+        featuredPlaylists: [
+            { id: 'p1', title: 'Top Hits 2024', description: 'Popular hits', cover: 'https://picsum.photos/200?6' },
+            // ... other playlists ...
+        ],
+        topMixes: [
+            { id: 'm1', title: 'Your Mix 1', description: 'Based on your listening', cover: 'https://picsum.photos/200?10' },
+            // ... other mixes ...
+        ]
+    };*/
+
+    // With this new code:
+    const musicData = {
+        recentlyPlayed: songDatabase.getRandomSongs(10),
+        featuredPlaylists: songDatabase.getFeaturedPlaylists(),
+        topMixes: songDatabase.getRandomSongs(6),
+    };
+
+    // Rest of your code remains exactly the same
+    // DOM Elements
+    const searchInput = document.querySelector('.search-box input');
+    // ... rest of your existing code ...
+});
+
+// ... rest of your existing code ...
             // Initialize sliders
             function initializeSliders() {
                 recentlyPlayedSlider.innerHTML = musicData.recentlyPlayed.map(createSongCard).join('');
@@ -1170,5 +1203,6 @@
             showNotification('Welcome!', 'Start exploring your music collection.');
         });
     </script>
+    <script src="songData.js"></script>
 </body>
 </html>
