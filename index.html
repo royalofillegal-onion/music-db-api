@@ -315,72 +315,44 @@
         .song-card:hover .options-button {
             opacity: 1;
         }
-
         .options-button:hover {
             background: rgba(0, 0, 0, 0.7);
             transform: scale(1.1);
         }
-
-        /* Search Results Styles */
+        .search-container {
+            position: relative;
+        }
         .search-results {
             position: absolute;
-            top: calc(100% + 10px);
+            top: 100%;
             left: 0;
             right: 0;
-            background: var(--card-bg);
+            background: #fff;
             border-radius: 8px;
-            max-height: 400px;
-            overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto; 
             z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            display: none;
         }
-
         .search-results.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+            display: block;
         }
-
         .search-result-item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            gap: 15px;
+            padding: 10px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: background 0.2s;
         }
-
         .search-result-item:hover {
-            background: var(--hover-bg);
+            background: #f5f5f5;
         }
-
         .search-result-item img {
             width: 40px;
             height: 40px;
             border-radius: 4px;
-            object-fit: cover;
-        }
-
-        .search-result-item div {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .search-result-item h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .search-result-item p {
-            font-size: 12px;
-            color: var(--grey-text);
+            margin-right: 12px;
         }
                 /* Player Controls Styles */
                 .player {
@@ -995,45 +967,67 @@
         };
     }
 
-    const handleSearch = debounce((searchTerm) => {
-        if (searchTerm.length < 2) {
-            searchResults.classList.remove('active');
-            return;
-        }
+   // ... existing code ...
+const handleSearch = debounce((searchTerm) => {
+    const searchResults = document.querySelector('.search-results');
+    
+    if (searchTerm.length < 2) {
+        searchResults.classList.remove('active');
+        return;
+    }
 
-        const results = songDatabase.searchSongs(searchTerm);
+    const results = songDatabase.searchSongs(searchTerm);
 
-        if (results.length > 0) {
-            searchResults.innerHTML = results.map(song => `
-                <div class="search-result-item" data-id="${song.id}" data-file="${song.file}">
-                    <img src="${song.cover}" alt="${song.title}">
-                    <div>
-                        <h4>${song.title}</h4>
-                        <p>${song.artist}</p>
-                    </div>
+    if (results.length > 0) {
+        searchResults.innerHTML = results.map(song => `
+            <div class="search-result-item" data-id="${song.id}" data-file="${song.file}">
+                <img src="${song.cover}" alt="${song.title}">
+                <div>
+                    <h4>${song.title}</h4>
+                    <p>${song.artist}</p>
                 </div>
-            `).join('');
-            searchResults.classList.add('active');
+            </div>
+        `).join('');
+        searchResults.classList.add('active');
 
-            // Add click handlers for search results
-            document.querySelectorAll('.search-result-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const songId = parseInt(item.dataset.id);
-                    playSong(songId);
-                    searchInput.value = '';
-                    searchResults.classList.remove('active');
-                });
+        // Add click handlers for search results
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const songId = parseInt(item.dataset.id);
+                playSong(songId);
+                searchInput.value = '';
+                searchResults.classList.remove('active');
             });
-        } else {
-            searchResults.innerHTML = `
-                <div class="search-result-item no-results">
-                    <p>No songs found</p>
-                </div>
-            `;
-            searchResults.classList.add('active');
-        }
-    }, 300);
+        });
+    } else {
+        searchResults.innerHTML = `
+            <div class="search-result-item no-results">
+                <p>No songs found</p>
+            </div>
+        `;
+        searchResults.classList.add('active');
+    }
+}, 300);
 
+// Add click event listener to close search results when clicking outside
+document.addEventListener('click', (e) => {
+    const searchContainer = document.querySelector('.search-container');
+    const searchResults = document.querySelector('.search-results');
+    
+    if (!searchContainer.contains(e.target)) {
+        searchResults.classList.remove('active');
+    }
+});
+
+// Add click event listener to close search results when clicking outside
+document.addEventListener('click', (e) => {
+    const searchContainer = document.querySelector('.search-container');
+    const searchResults = document.querySelector('.search-results');
+    
+    if (!searchContainer.contains(e.target)) {
+        searchResults.classList.remove('active');
+    }
+});
     // Play song function
     function playSong(songId) {
         const song = songDatabase.getSongById(songId);
