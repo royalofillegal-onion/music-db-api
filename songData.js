@@ -30,10 +30,10 @@ const songDatabase = {
         },
         {
             id: 5,
-            title: "pushpa",
+            title: "Radhika",
             artist: "Test Artist 5",
             cover: "https://picsum.photos/200?5",
-            file: "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav"
+            file: "https://res.cloudinary.com/dykzuljjr/video/upload/v1743345915/Radhika_verm5t.mp3"
         }
     ],
 
