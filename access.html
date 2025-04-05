@@ -1076,6 +1076,7 @@
         // Check authentication state
         auth.onAuthStateChanged((user) => {
             if (!user) {
+                // If not authenticated, redirect to login page
                 window.location.href = "index.html";
             }
         });
@@ -1083,13 +1084,11 @@
         // Add logout functionality
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             try {
-                // Clear all stored credentials
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('lastLoginDate');
-                
                 // Sign out from Firebase
                 await signOut(auth);
+                
+                // Clear all stored credentials
+                localStorage.clear();
                 
                 // Redirect to index.html
                 window.location.href = "index.html";
