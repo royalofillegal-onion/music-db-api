@@ -898,6 +898,55 @@
                 transform: translateY(0);
             }
         }
+
+        .upload-form {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -916,6 +965,36 @@
     </header>
 
     <main>
+        <div class="playlist-section">
+            <h2>Upload New Song</h2>
+            <div class="upload-form">
+                <form id="uploadForm">
+                    <div class="input-group">
+                        <input type="text" id="songTitle" placeholder="Song Title" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="artistName" placeholder="Artist Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="coverUrl" placeholder="Cover Image URL" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="audioUrl" placeholder="Audio File URL" required>
+                    </div>
+                    <div class="input-group">
+                        <select id="songCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="recentlyPlayed">Recently Played</option>
+                            <option value="featuredPlaylists">Featured Playlists</option>
+                            <option value="trendingNow">Trending Now</option>
+                            <option value="newReleases">New Releases</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="upload-btn">Upload Song</button>
+                </form>
+            </div>
+        </div>
+
         <div class="playlist-section">
             <h2>Recently Played</h2>
             <div class="slider-container" data-category="recentlyPlayed"></div>
@@ -977,12 +1056,12 @@
 
         // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
-            authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
-            projectId: "YOUR_FIREBASE_PROJECT_ID",
-            storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
-            appId: "YOUR_FIREBASE_APP_ID"
+            apiKey: "AIzaSyAaQDKLlmT3zYC5ww3rxiul_FB7HfviZUA",
+            authDomain: "royalstar-d6a4e.firebaseapp.com",
+            projectId: "royalstar-d6a4e",
+            storageBucket: "royalstar-d6a4e.firebasestorage.app",
+            messagingSenderId: "796910377639",
+            appId: "1:796910377639:web:f8de8945e558fb9868d982"
         };
 
         // Initialize Firebase
@@ -990,8 +1069,8 @@
         const auth = getAuth(app);
 
         // Supabase Configuration (for song data)
-        const supabaseUrl = 'YOUR_SUPABASE_URL'
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
+        const supabaseUrl = 'https://rkwovwqiltqpcwdoaddm.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrd292d3FpbHRxcGN3ZG9hZGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3ODIzNTcsImV4cCI6MjA1OTM1ODM1N30.S1jFjw9YIkhEey8wob1y9cUteFXASRq6SpG2-jqZpks'
         const supabase = createClient(supabaseUrl, supabaseKey)
 
         // Check authentication state
@@ -1040,71 +1119,47 @@
 
         // Function to fetch playlists
         async function fetchPlaylists() {
-            const { data: playlists, error } = await supabase
-                .from('playlists')
-                .select('*')
-                .order('created_at', { ascending: false });
+            try {
+                const { data: playlists, error } = await supabase
+                    .from('editor')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-            if (error) {
-                console.error('Error fetching playlists:', error);
-                return;
-            }
+                if (error) throw error;
 
-            // Update the playlist sections
-            const sections = ['recentlyPlayed', 'featuredPlaylists', 'trendingNow', 'newReleases'];
-            sections.forEach(section => {
-                const container = document.querySelector(`.slider-container[data-category="${section}"]`);
-                container.innerHTML = ''; // Clear existing content
+                // Update the playlist sections
+                const sections = ['recentlyPlayed', 'featuredPlaylists', 'trendingNow', 'newReleases'];
+                sections.forEach(section => {
+                    const container = document.querySelector(`.slider-container[data-category="${section}"]`);
+                    container.innerHTML = ''; // Clear existing content
 
-                // Filter playlists by category
-                const sectionPlaylists = playlists.filter(p => p.category === section);
-                
-                sectionPlaylists.forEach((playlist, index) => {
-                    const slide = document.createElement('div');
-                    slide.className = 'song-slide';
-                    slide.style.setProperty('--index', index);
-                    slide.innerHTML = `
-                        <img src="${playlist.cover_url}" alt="${playlist.title}">
-                        <div class="song-info-container">
-                            <div class="song-title">${playlist.title}</div>
-                            <div class="song-artist">${playlist.artist}</div>
-                        </div>
-                        <div class="play-button-overlay">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    `;
+                    // Filter playlists by category
+                    const sectionPlaylists = playlists.filter(p => p.category === section);
                     
-                    slide.addEventListener('click', () => {
-                        playSong(playlist);
+                    sectionPlaylists.forEach((playlist, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = 'song-slide';
+                        slide.style.setProperty('--index', index);
+                        slide.innerHTML = `
+                            <img src="${playlist.cover_url}" alt="${playlist.title}">
+                            <div class="song-info-container">
+                                <div class="song-title">${playlist.title}</div>
+                                <div class="song-artist">${playlist.artist}</div>
+                            </div>
+                            <div class="play-button-overlay">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        `;
+                        
+                        slide.addEventListener('click', () => {
+                            playSong(playlist);
+                        });
+                        
+                        container.appendChild(slide);
                     });
-                    
-                    container.appendChild(slide);
                 });
-            });
-        }
-
-        // Function to play a song
-        async function playSong(playlist) {
-            const audio = new Audio(playlist.audio_url);
-            audio.play();
-            
-            // Update current song info
-            document.getElementById('current-song').textContent = playlist.title;
-            document.getElementById('current-artist').textContent = playlist.artist;
-            document.getElementById('current-album-art').src = playlist.cover_url;
-
-            // Add to recently played
-            const user = auth.currentUser;
-            if (user) {
-                await supabase
-                    .from('recently_played')
-                    .insert([
-                        { 
-                            user_id: user.uid,
-                            playlist_id: playlist.id,
-                            played_at: new Date().toISOString()
-                        }
-                    ]);
+            } catch (error) {
+                console.error('Error fetching playlists:', error);
             }
         }
 
@@ -1115,17 +1170,18 @@
                 return;
             }
 
-            const { data: results, error } = await supabase
-                .from('playlists')
-                .select('*')
-                .or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
+            try {
+                const { data: results, error } = await supabase
+                    .from('editor')
+                    .select('*')
+                    .or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
 
-            if (error) {
+                if (error) throw error;
+
+                displaySearchResults(results);
+            } catch (error) {
                 console.error('Error searching:', error);
-                return;
             }
-
-            displaySearchResults(results);
         }
 
         // Function to display search results
@@ -1155,6 +1211,50 @@
                 });
             }
             searchResults.classList.add('active');
+        }
+
+        // Function to upload a new song
+        async function uploadSong(songData) {
+            try {
+                const { data, error } = await supabase
+                    .from('editor')
+                    .insert([songData]);
+
+                if (error) throw error;
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error uploading song:', error);
+                return { success: false, error };
+            }
+        }
+
+        // Function to play a song
+        async function playSong(playlist) {
+            const audio = new Audio(playlist.audio_url);
+            audio.play();
+            
+            // Update current song info
+            document.getElementById('current-song').textContent = playlist.title;
+            document.getElementById('current-artist').textContent = playlist.artist;
+            document.getElementById('current-album-art').src = playlist.cover_url;
+
+            // Add to recently played
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await supabase
+                        .from('recently_played')
+                        .insert([
+                            { 
+                                user_id: user.uid,
+                                playlist_id: playlist.id,
+                                played_at: new Date().toISOString()
+                            }
+                        ]);
+                } catch (error) {
+                    console.error('Error logging play:', error);
+                }
+            }
         }
 
         // Initialize the page
@@ -1205,6 +1305,34 @@
                     slider.scrollLeft = scrollLeft - walk;
                 });
             });
+        });
+
+        // Handle song upload
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const songData = {
+                title: document.getElementById('songTitle').value,
+                artist: document.getElementById('artistName').value,
+                cover_url: document.getElementById('coverUrl').value,
+                audio_url: document.getElementById('audioUrl').value,
+                category: document.getElementById('songCategory').value,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const result = await uploadSong(songData);
+                if (result.success) {
+                    alert('Song uploaded successfully!');
+                    document.getElementById('uploadForm').reset();
+                    await fetchPlaylists(); // Refresh the playlists
+                } else {
+                    alert('Error uploading song. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error uploading song:', error);
+                alert('Error uploading song. Please try again.');
+            }
         });
     </script>
 </body>
