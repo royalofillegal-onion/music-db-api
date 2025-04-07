@@ -8,7 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Quicksand', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
         body { 
             display: flex; 
             justify-content: center; 
@@ -17,6 +24,7 @@
             background: linear-gradient(45deg, #1a1a1a, #2d1b3b);
             overflow: hidden;
             position: relative;
+            -webkit-overflow-scrolling: touch;
         }
         .background {
             position: fixed;
@@ -45,7 +53,7 @@
             width: 90%; 
             max-width: 400px;
             background: rgba(34, 34, 34, 0.8); 
-            padding: 30px; 
+            padding: 20px; 
             border-radius: 4px; 
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9); 
             text-align: center;
@@ -55,6 +63,8 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(155, 89, 182, 0.2);
             margin: 20px auto;
+            transform: translateZ(0);
+            will-change: transform;
         }
         h2 { 
             color: #9b59b6; 
@@ -66,7 +76,7 @@
         }
         .inputBox { 
             position: relative; 
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             animation: slideUp 0.5s ease-out;
         }
         .inputBox input { 
@@ -77,7 +87,9 @@
             color: #fff; 
             border-radius: 4px;
             transition: all 0.3s ease;
-            font-size: 1em;
+            font-size: 16px; /* Prevent zoom on iOS */
+            -webkit-appearance: none;
+            appearance: none;
         }
         .inputBox input:focus {
             outline: none;
@@ -93,6 +105,7 @@
             border: none;
             text-transform: uppercase;
             letter-spacing: 1px;
+            -webkit-tap-highlight-color: transparent;
         }
         .inputBox input[type="submit"]:hover {
             background: linear-gradient(45deg, #8e44ad, #9b59b6);
@@ -151,123 +164,44 @@
             animation: fire 1s infinite alternate;
             display: none;
         }
-        .boy-character {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 150px;
-            height: 200px;
-            z-index: 2;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+            
+            h2 {
+                font-size: 2em;
+                margin-bottom: 15px;
+            }
+            
+            .inputBox {
+                margin-bottom: 12px;
+            }
+            
+            .inputBox input {
+                padding: 10px;
+                font-size: 16px;
+            }
+            
+            .links {
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
         }
-        .boy-body {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-size: contain;
-            animation: bounce 2s infinite;
-        }
-        .boy-body.happy {
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200"><circle cx="50" cy="30" r="20" fill="%23ffd700"/><path d="M30,50 L70,50 L60,150 L40,150 Z" fill="%23ffd700"/><path d="M30,50 L20,100 L40,100 Z" fill="%23ffd700"/><path d="M70,50 L80,100 L60,100 Z" fill="%23ffd700"/><path d="M30,20 Q50,40 70,20" stroke="%23000" stroke-width="2" fill="none"/></svg>') no-repeat center center;
-        }
-        .boy-body.angry {
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200"><circle cx="50" cy="30" r="20" fill="%23ffd700"/><path d="M30,50 L70,50 L60,150 L40,150 Z" fill="%23ffd700"/><path d="M30,50 L20,100 L40,100 Z" fill="%23ffd700"/><path d="M70,50 L80,100 L60,100 Z" fill="%23ffd700"/><path d="M30,20 L40,25" stroke="%23000" stroke-width="2"/><path d="M70,20 L60,25" stroke="%23000" stroke-width="2"/></svg>') no-repeat center center;
-            animation: shake 0.5s infinite;
-        }
-        .speech-bubble {
-            position: absolute;
-            bottom: 100%;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            width: 200px;
-            text-align: center;
-            color: #333;
-            font-weight: bold;
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .speech-bubble.angry {
-            background: rgba(255, 200, 200, 0.9);
-            color: #c00;
-        }
-        .speech-bubble.happy {
-            background: rgba(200, 255, 200, 0.9);
-            color: #0a0;
-        }
-        .speech-bubble:after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            right: 20px;
-            border-width: 10px 10px 0;
-            border-style: solid;
-            border-color: rgba(255, 255, 255, 0.9) transparent;
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes glow {
-            from { text-shadow: 0 0 5px rgba(155, 89, 182, 0.5); }
-            to { text-shadow: 0 0 20px rgba(155, 89, 182, 0.8); }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        @keyframes fly {
-            0% { transform: translate(-100px, 100px) rotate(0deg); }
-            100% { transform: translate(calc(100vw + 100px), -100px) rotate(360deg); }
-        }
-        @keyframes fire {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0.4; }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes wave {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(15deg); }
-            75% { transform: rotate(-15deg); }
-        }
-        @keyframes jump {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        .boy-character.happy {
-            animation: jump 0.5s ease-in-out;
-        }
-        .boy-character.angry {
-            animation: shake 0.2s infinite;
-        }
-        .boy-character:hover {
-            transform: scale(1.1);
-        }
-        .boy-character:hover .speech-bubble {
-            display: block;
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 12px;
+            }
+            
+            h2 {
+                font-size: 1.8em;
+            }
+            
+            .inputBox input {
+                padding: 8px;
+            }
         }
     </style>
 </head>
@@ -277,10 +211,6 @@
     <div class="netflix-logo">ROYALSTAR</div>
     <div class="eagle"></div>
     <div class="fire"></div>
-    <div class="boy-character">
-        <div class="boy-body happy"></div>
-        <div class="speech-bubble" id="boyMessage">Hi! Ready to login? Click me for help!</div>
-    </div>
 
     <!-- Login Form -->
     <div class="container" id="loginContainer">
@@ -294,8 +224,8 @@
                 <input type="password" id="loginPassword" placeholder="Password" required>
             </div>
             <div class="links">
-                <a href="javascript:void(0);" onclick="showForgotPassword()">Forgot Password?</a>
-                <a href="javascript:void(0);" onclick="showRegister()">Register</a>
+                <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                <a href="#" onclick="showRegister()">Register</a>
             </div>
             <div class="inputBox">
                 <input type="submit" value="Login">
@@ -317,7 +247,7 @@
             <div class="inputBox">
                 <input type="submit" value="Register">
             </div>
-            <a href="javascript:void(0);" onclick="showLogin()">Back to Login</a>
+            <a href="#" onclick="showLogin()">Back to Login</a>
         </form>
     </div>
     
@@ -332,292 +262,432 @@
             <div class="inputBox">
                 <input type="submit" value="Reset Password">
             </div>
-            <a href="javascript:void(0);" onclick="showLogin()">Back to Login</a>
+            <a href="#" onclick="showLogin()">Back to Login</a>
         </form>
     </div>
 
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    <!-- SMS Verification Form -->
+    <div class="container" id="smsContainer" style="display: none;">
+        <h2>Phone Verification</h2>
+        <div class="error" id="smsError"></div>
+        <form id="smsForm">
+            <div class="inputBox">
+                <input type="tel" id="phoneNumber" placeholder="Enter phone number (e.g., +1234567890)" required>
+            </div>
+            <div class="inputBox">
+                <input type="submit" value="Send Verification Code">
+            </div>
+        </form>
+    </div>
 
-        // Firebase Configuration
+    <!-- OTP Verification Form -->
+    <div class="container" id="otpContainer" style="display: none;">
+        <h2>Email Verification</h2>
+        <div class="error" id="otpError"></div>
+        <div class="timer" id="otpTimer" style="color: #9b59b6; margin-bottom: 10px;">Time remaining: 60 seconds</div>
+        <form id="otpForm">
+            <div class="inputBox">
+                <input type="text" id="otpCode" placeholder="Enter verification code" required>
+            </div>
+            <div class="inputBox">
+                <input type="submit" value="Verify">
+            </div>
+            <div class="links">
+                <a href="#" id="resendOTPLink">Resend Code</a>
+                <a href="#" onclick="showLogin()">Back to Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form visibility toggle functions
+        function showLogin() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('registerContainer').style.display = 'none';
+            document.getElementById('forgotContainer').style.display = 'none';
+            document.getElementById('otpContainer').style.display = 'none';
+            document.getElementById('smsContainer').style.display = 'none';
+            document.getElementById('loginError').textContent = "";
+        }
+
+        function showRegister() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'block';
+            document.getElementById('forgotContainer').style.display = 'none';
+            document.getElementById('otpContainer').style.display = 'none';
+            document.getElementById('smsContainer').style.display = 'none';
+            document.getElementById('registerError').textContent = "";
+        }
+
+        function showForgotPassword() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('registerContainer').style.display = 'none';
+            document.getElementById('forgotContainer').style.display = 'block';
+            document.getElementById('otpContainer').style.display = 'none';
+            document.getElementById('smsContainer').style.display = 'none';
+            document.getElementById('forgotError').textContent = "";
+        }
+
+        function showOTPForm(email) {
+            console.log('Showing OTP form for email:', email);
+            const containers = [
+                'loginContainer',
+                'registerContainer',
+                'forgotContainer',
+                'otpContainer',
+                'smsContainer'
+            ];
+            
+            containers.forEach(containerId => {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.style.display = containerId === 'otpContainer' ? 'block' : 'none';
+                }
+            });
+            
+            const errorDiv = document.getElementById('otpError');
+            if (errorDiv) {
+                errorDiv.textContent = "";
+            }
+            
+            // Start timer and send OTP
+            sendOTPEmail(email);
+        }
+
+        // OTP related variables
+        let otpData = {
+            email: '',
+            otp: '',
+            expiry: 0,
+            timer: null
+        };
+
+        // Generate OTP
+        function generateOTP() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // Start OTP timer
+        function startOTPTimer() {
+            let timeLeft = 60;
+            const timerElement = document.getElementById('otpTimer');
+            if (!timerElement) return;
+            
+            // Clear any existing timer
+            if (otpData.timer) {
+                clearInterval(otpData.timer);
+            }
+
+            // Update timer every second
+            otpData.timer = setInterval(() => {
+                timeLeft--;
+                if (timerElement) {
+                    timerElement.textContent = `Time remaining: ${timeLeft} seconds`;
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(otpData.timer);
+                    const errorDiv = document.getElementById('otpError');
+                    if (errorDiv) {
+                        errorDiv.textContent = "OTP expired. Please request a new one.";
+                    }
+                    const resendLink = document.getElementById('resendOTPLink');
+                    if (resendLink) {
+                        resendLink.style.display = 'block';
+                    }
+                }
+            }, 1000);
+        }
+
+        // Send OTP email
+        async function sendOTPEmail(email) {
+            try {
+                const otp = generateOTP();
+                const expiry = Date.now() + 60 * 1000; // 1 minute expiry
+                
+                otpData = {
+                    email: email,
+                    otp: otp,
+                    expiry: expiry,
+                    timer: null
+                };
+
+                // Create a temporary user to send verification email
+                const tempPassword = generateOTP() + 'Aa!'; // Add complexity for password requirements
+                const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
+                
+                // Send verification email
+                await sendEmailVerification(userCredential.user, {
+                    handleCodeInApp: true,
+                    url: window.location.origin + '/index.html'
+                });
+
+                // Delete the temporary user after sending email
+                await deleteUser(userCredential.user);
+                
+                // Show success message and start timer
+                const errorDiv = document.getElementById('otpError');
+                if (errorDiv) {
+                    errorDiv.textContent = "Verification email sent! Please check your inbox.";
+                }
+                
+                const resendLink = document.getElementById('resendOTPLink');
+                if (resendLink) {
+                    resendLink.style.display = 'none';
+                }
+                
+                startOTPTimer();
+                return true;
+            } catch (error) {
+                console.error("Error sending OTP:", error);
+                const errorDiv = document.getElementById('otpError');
+                if (errorDiv) {
+                    let errorMessage = "Failed to send verification email. Please try again.";
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = "This email is already registered. Please login instead.";
+                    }
+                    errorDiv.textContent = errorMessage;
+                }
+                return false;
+            }
+        }
+
+        // Verify OTP
+        function verifyOTP(inputOTP) {
+            if (Date.now() > otpData.expiry) {
+                return { success: false, message: "OTP has expired. Please request a new one." };
+            }
+            if (inputOTP === otpData.otp) {
+                return { success: true, message: "OTP verified successfully!" };
+            }
+            return { success: false, message: "Invalid OTP. Please try again." };
+        }
+
+        // Resend OTP
+        function resendOTP() {
+            if (otpData.email) {
+                sendOTPEmail(otpData.email);
+            }
+        }
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Register form submission
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('registerUsername').value.trim();
+                    const password = document.getElementById('registerPassword').value.trim();
+                    const errorDiv = document.getElementById('registerError');
+                    if (errorDiv) {
+                        errorDiv.textContent = "";
+                    }
+
+                    if (!email || !password) {
+                        if (errorDiv) {
+                            errorDiv.textContent = "Please fill in all fields!";
+                        }
+                        return;
+                    }
+
+                    // Validate Gmail format
+                    const gmailRegex = /^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@gmail\.com$/;
+                    if (!gmailRegex.test(email)) {
+                        if (errorDiv) {
+                            errorDiv.textContent = "Please enter a valid Gmail address!";
+                        }
+                        return;
+                    }
+
+                    if (password.length < 8) {
+                        if (errorDiv) {
+                            errorDiv.textContent = "Password must be at least 8 characters!";
+                        }
+                        return;
+                    }
+
+                    try {
+                        // Store registration data temporarily
+                        localStorage.setItem('pendingRegistration', JSON.stringify({ email, password }));
+                        // Show OTP form
+                        showOTPForm(email);
+                    } catch (error) {
+                        if (errorDiv) {
+                            errorDiv.textContent = "Error during registration. Please try again.";
+                        }
+                    }
+                });
+            }
+
+            // OTP form submission
+            const otpForm = document.getElementById('otpForm');
+            if (otpForm) {
+                otpForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const otp = document.getElementById('otpCode').value.trim();
+                    const errorDiv = document.getElementById('otpError');
+                    if (errorDiv) {
+                        errorDiv.textContent = "";
+                    }
+
+                    if (!otp) {
+                        if (errorDiv) {
+                            errorDiv.textContent = "Please enter the OTP!";
+                        }
+                        return;
+                    }
+
+                    const verification = verifyOTP(otp);
+                    if (!verification.success) {
+                        if (errorDiv) {
+                            errorDiv.textContent = verification.message;
+                        }
+                        return;
+                    }
+
+                    try {
+                        // Get stored registration data
+                        const registrationData = JSON.parse(localStorage.getItem('pendingRegistration'));
+                        if (!registrationData) {
+                            if (errorDiv) {
+                                errorDiv.textContent = "Registration data not found. Please try registering again.";
+                            }
+                            return;
+                        }
+
+                        // Create user account
+                        const userCredential = await createUserWithEmailAndPassword(auth, registrationData.email, registrationData.password);
+                        
+                        // Clear stored data and timer
+                        localStorage.removeItem('pendingRegistration');
+                        if (otpData.timer) {
+                            clearInterval(otpData.timer);
+                        }
+                        
+                        if (errorDiv) {
+                            errorDiv.textContent = "Registration successful! You can now login.";
+                        }
+                        setTimeout(() => {
+                            showLogin();
+                        }, 1500);
+                    } catch (error) {
+                        let errorMessage = "Registration failed!";
+                        switch (error.code) {
+                            case 'auth/email-already-in-use':
+                                errorMessage = "Email already in use!";
+                                break;
+                            case 'auth/invalid-email':
+                                errorMessage = "Invalid email format!";
+                                break;
+                            case 'auth/weak-password':
+                                errorMessage = "Password should be at least 8 characters with uppercase, lowercase, numbers, and special characters!";
+                                break;
+                            case 'auth/network-request-failed':
+                                errorMessage = "Network error. Please check your connection!";
+                                break;
+                        }
+                        if (errorDiv) {
+                            errorDiv.textContent = errorMessage;
+                        }
+                    }
+                });
+            }
+
+            // Resend OTP link
+            const resendLink = document.getElementById('resendOTPLink');
+            if (resendLink) {
+                resendLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    resendOTP();
+                });
+            }
+
+            // Show login form by default
+            showLogin();
+        });
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, setPersistence, browserLocalPersistence, sendEmailVerification, deleteUser } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAaQDKLlmT3zYC5ww3rxiul_FB7HfviZUA",
             authDomain: "royalstar-d6a4e.firebaseapp.com",
             projectId: "royalstar-d6a4e",
             storageBucket: "royalstar-d6a4e.firebasestorage.app",
             messagingSenderId: "796910377639",
-            appId: "1:796910377639:web:f8de8945e558fb9868d982"
+            appId: "1:796910377639:web:f8de8945e558fb9868d982",
         };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
-        // DOM Elements
-        const boyCharacter = document.querySelector('.boy-character');
-        const boyBody = document.querySelector('.boy-body');
-        const boyMessage = document.getElementById('boyMessage');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const forgotForm = document.getElementById('forgotForm');
-
-        // Boy character emotion function
-        function setBoyEmotion(emotion, message) {
-            boyCharacter.className = 'boy-character ' + emotion;
-            boyBody.className = 'boy-body ' + emotion;
-            boyMessage.className = 'speech-bubble ' + emotion;
-            boyMessage.textContent = message;
-            boyMessage.style.display = 'block';
-        }
-
-        // Form visibility functions
-        function showRegister() {
-            const loginContainer = document.getElementById('loginContainer');
-            const registerContainer = document.getElementById('registerContainer');
-            const forgotContainer = document.getElementById('forgotContainer');
-            
-            loginContainer.style.display = 'none';
-            registerContainer.style.display = 'block';
-            forgotContainer.style.display = 'none';
-            
-            // Clear any error messages
-            document.getElementById('registerError').textContent = '';
-            document.getElementById('registerUsername').value = '';
-            document.getElementById('registerPassword').value = '';
-            
-            setBoyEmotion('happy', "Let's create your account!");
-            document.getElementById('registerUsername').focus();
-        }
-
-        function showForgotPassword() {
-            const loginContainer = document.getElementById('loginContainer');
-            const registerContainer = document.getElementById('registerContainer');
-            const forgotContainer = document.getElementById('forgotContainer');
-            
-            loginContainer.style.display = 'none';
-            registerContainer.style.display = 'none';
-            forgotContainer.style.display = 'block';
-            
-            // Clear any error messages
-            document.getElementById('forgotError').textContent = '';
-            document.getElementById('forgotUsername').value = '';
-            
-            setBoyEmotion('happy', "Don't worry, I'll help you reset your password!");
-            document.getElementById('forgotUsername').focus();
-        }
-
-        function showLogin() {
-            const loginContainer = document.getElementById('loginContainer');
-            const registerContainer = document.getElementById('registerContainer');
-            const forgotContainer = document.getElementById('forgotContainer');
-            
-            loginContainer.style.display = 'block';
-            registerContainer.style.display = 'none';
-            forgotContainer.style.display = 'none';
-            
-            // Clear any error messages
-            document.getElementById('loginError').textContent = '';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            
-            setBoyEmotion('happy', "Welcome back! Ready to login?");
-            document.getElementById('loginUsername').focus();
-        }
-
-        // Add click event listeners for the links
-        document.addEventListener('DOMContentLoaded', () => {
-            // Register link
-            const registerLink = document.querySelector('a[onclick="showRegister()"]');
-            if (registerLink) {
-                registerLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showRegister();
-                });
-            }
-            
-            // Forgot password link
-            const forgotLink = document.querySelector('a[onclick="showForgotPassword()"]');
-            if (forgotLink) {
-                forgotLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showForgotPassword();
-                });
-            }
-            
-            // Back to login links (multiple)
-            const backToLoginLinks = document.querySelectorAll('a[onclick="showLogin()"]');
-            backToLoginLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showLogin();
-                });
+        
+        // Set persistence to LOCAL to maintain session across browser restarts
+        setPersistence(auth, browserLocalPersistence)
+            .catch((error) => {
+                console.error("Error setting persistence:", error);
             });
 
-            // Initialize with login form
-            showLogin();
-        });
+        // User activity tracking
+        let lastActivityTime = Date.now();
+        const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-        // Login form submission
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            const errorDiv = document.getElementById('loginError');
-            errorDiv.textContent = "";
-
-            if (!email || !password) {
-                errorDiv.textContent = "Please fill in all fields!";
-                setBoyEmotion('angry', "Please fill in all fields!");
-                return;
+        // Track user activity
+        function updateLastActivity() {
+            lastActivityTime = Date.now();
+            // Store the last activity time in localStorage
+            localStorage.setItem('lastActivityTime', lastActivityTime);
+            // Store device ID for persistence
+            if (!localStorage.getItem('deviceId')) {
+                localStorage.setItem('deviceId', generateDeviceId());
             }
+        }
 
-            try {
-                setBoyEmotion('happy', 'Checking credentials...');
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                
-                // Store credentials and today's date
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('lastLoginDate', new Date().toDateString());
-                
-                setBoyEmotion('happy', 'Welcome back! Logging you in...');
-                
-                // Ensure the redirection happens after the animation
-                setTimeout(() => {
-                    window.location.replace("access.html");
-                }, 1500);
-            } catch (error) {
-                let errorMessage = "Login failed!";
-                switch (error.code) {
-                    case 'auth/invalid-credential':
-                        errorMessage = "Invalid email or password!";
-                        break;
-                    case 'auth/user-not-found':
-                        errorMessage = "No account found with this email!";
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage = "Too many failed attempts. Try again later!";
-                        break;
-                }
-                setBoyEmotion('angry', errorMessage);
-                errorDiv.textContent = errorMessage;
-                setTimeout(() => {
-                    setBoyEmotion('happy', 'Try again! I believe in you!');
-                }, 2000);
-            }
-        });
+        // Generate a unique device ID
+        function generateDeviceId() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
 
-        // Register form submission
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('registerUsername').value.trim();
-            const password = document.getElementById('registerPassword').value.trim();
-            const errorDiv = document.getElementById('registerError');
-            errorDiv.textContent = "";
-
-            if (!email || !password) {
-                errorDiv.textContent = "Please fill in all fields!";
-                setBoyEmotion('angry', "Please fill in all fields!");
-                return;
-            }
-
-            if (password.length < 6) {
-                errorDiv.textContent = "Password must be at least 6 characters!";
-                setBoyEmotion('angry', "Password must be at least 6 characters!");
-                return;
-            }
-
-            try {
-                setBoyEmotion('happy', 'Creating your account...');
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('lastLoginDate', new Date().toDateString());
-                setBoyEmotion('happy', 'Account created successfully!');
-                setTimeout(() => {
-                    showLogin();
-                }, 1500);
-            } catch (error) {
-                let errorMessage = "Registration failed!";
-                switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        errorMessage = "Email already in use!";
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = "Invalid email format!";
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage = "Password should be at least 6 characters!";
-                        break;
-                }
-                setBoyEmotion('angry', errorMessage);
-                errorDiv.textContent = errorMessage;
-                setTimeout(() => {
-                    setBoyEmotion('happy', 'Let\'s try again!');
-                }, 2000);
-            }
-        });
-
-        // Forgot password form submission
-        forgotForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('forgotUsername').value.trim();
-            const errorDiv = document.getElementById('forgotError');
-            errorDiv.textContent = "";
-
-            if (!email) {
-                errorDiv.textContent = "Please enter your email!";
-                setBoyEmotion('angry', "Please enter your email!");
-                return;
-            }
-
-            try {
-                setBoyEmotion('happy', 'Sending reset email...');
-                await sendPasswordResetEmail(auth, email);
-                
-                setBoyEmotion('happy', 'Reset email sent! Check your inbox.');
-                setTimeout(() => {
-                    showLogin();
-                }, 2000);
-            } catch (error) {
-                let errorMessage = "Failed to send reset email!";
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        errorMessage = "Invalid email format!";
-                        break;
-                    case 'auth/user-not-found':
-                        errorMessage = "No account found with this email!";
-                        break;
-                }
-                setBoyEmotion('angry', errorMessage);
-                errorDiv.textContent = errorMessage;
-                setTimeout(() => {
-                    setBoyEmotion('happy', 'I\'ll help you reset your password!');
-                }, 2000);
-            }
-        });
-
-        // Check authentication state
-        auth.onAuthStateChanged((user) => {
+        // Check for existing session
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Check if credentials were stored today
-                const lastLoginDate = localStorage.getItem('lastLoginDate');
-                const today = new Date().toDateString();
-                
-                if (lastLoginDate !== today) {
-                    // If it's a new day, clear stored credentials
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userEmail');
-                    localStorage.removeItem('lastLoginDate');
+                // Check if email is verified
+                if (!user.emailVerified) {
+                    auth.signOut().then(() => {
+                        localStorage.removeItem('lastActivityTime');
+                        showLogin();
+                        document.getElementById('loginError').textContent = "Please verify your email before logging in. Check your inbox for the verification link.";
+                    });
                     return;
                 }
+
+                // Get stored activity time and device ID
+                const storedTime = parseInt(localStorage.getItem('lastActivityTime') || '0');
+                const storedDeviceId = localStorage.getItem('deviceId');
+                const currentTime = Date.now();
                 
-                // Only redirect if credentials are valid for today and user is not on login page
-                if (localStorage.getItem('isLoggedIn') === 'true' && !window.location.pathname.includes('index.html')) {
-                    window.location.href = "access.html";
+                // Only clear session if user is inactive and we have a stored time
+                if (storedTime > 0 && currentTime - storedTime > INACTIVITY_TIMEOUT) {
+                    auth.signOut().then(() => {
+                        localStorage.removeItem('lastActivityTime');
+                        showLogin();
+                        document.getElementById('loginError').textContent = "Session expired due to inactivity. Please login again.";
+                    });
+                } else {
+                    // Update activity time if session is still valid
+                    updateLastActivity();
+                    // Redirect to access page if not already there
+                    if (!window.location.pathname.includes('access.html')) {
+                        window.location.replace("access.html");
+                    }
                 }
             } else {
                 // If not authenticated, ensure we're on the login page
@@ -626,6 +696,44 @@
                 }
             }
         });
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            // Initialize last activity time
+            const storedTime = parseInt(localStorage.getItem('lastActivityTime') || '0');
+            if (storedTime > 0) {
+                lastActivityTime = storedTime;
+            } else {
+                lastActivityTime = Date.now();
+                localStorage.setItem('lastActivityTime', lastActivityTime);
+            }
+            
+            // Check Firebase authentication state
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // If authenticated and within timeout, redirect to access page
+                    const currentTime = Date.now();
+                    const storedTime = parseInt(localStorage.getItem('lastActivityTime') || '0');
+                    if (currentTime - storedTime <= INACTIVITY_TIMEOUT) {
+                        window.location.replace("access.html");
+                    }
+                } else {
+                    // If not authenticated, ensure we're on the login page
+                    if (window.location.pathname.includes('access.html')) {
+                        window.location.href = "index.html";
+                    }
+                }
+            });
+        });
+
+        // Handle browser/tab close
+        window.addEventListener('beforeunload', () => {
+            // Store the current activity time
+            localStorage.setItem('lastActivityTime', Date.now());
+        });
+
+        // Initialize Firebase Functions
+        const functions = getFunctions(app);
 
         // Eagle and Fire Animation
         const eagle = document.querySelector('.eagle');
